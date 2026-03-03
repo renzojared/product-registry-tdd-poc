@@ -4,4 +4,8 @@
       <ProjectReference Include="..\ProductRegistry.Domain\ProductRegistry.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DotEmilu" />
+    </ItemGroup>
+
 </Project>
