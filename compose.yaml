@@ -1,0 +1,24 @@
+﻿services:
+  product-registry-db:
+    image: postgres:17.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: Registry
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - product-registry-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d Registry" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  product-registry-network:
+    driver: bridge
