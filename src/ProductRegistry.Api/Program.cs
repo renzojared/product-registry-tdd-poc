@@ -1,3 +1,5 @@
+using ProductRegistry.Api;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -13,5 +15,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSerilogMiddleware();
 
 await app.RunAsync();
