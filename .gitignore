@@ -416,3 +416,14 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# From Dotnet.gitignore (https://github.com/github/gitignore/blob/main/Dotnet.gitignore)
+x64/
+x86/
+CodeCoverage/
+
+# Rider
+.idea
+
+# Mac OS
+.DS_Store
