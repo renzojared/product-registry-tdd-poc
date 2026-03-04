@@ -40,6 +40,25 @@ public sealed class Product : BaseAuditableEntity<int, Guid>
     }
 
     /// <summary>
+    /// Updates all product properties. Used with the Attach pattern to generate minimal UPDATE statement.
+    /// </summary>
+    public void Update(string name, ProductStatus status, int stock, string description, decimal price, string sku)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentOutOfRangeException.ThrowIfNegative(stock);
+        ArgumentException.ThrowIfNullOrWhiteSpace(description);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sku);
+
+        Name = name;
+        Status = status;
+        Stock = stock;
+        Description = description;
+        Price = price;
+        Sku = sku;
+    }
+
+    /// <summary>
     /// The final price after applying an external discount percentage [0–100].
     /// </summary>
     public decimal CalculateFinalPrice(decimal discountPercentage) =>

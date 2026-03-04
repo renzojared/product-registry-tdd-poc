@@ -1,4 +1,5 @@
 using ProductRegistry.Application.Features.CreateProduct;
+using ProductRegistry.Application.Features.UpdateProduct;
 
 namespace ProductRegistry.Api;
 
@@ -9,7 +10,8 @@ public static class Endpoints
         application
             .MapGroup("api/product")
             .WithTags("Products")
-            .MapCreateProduct();
+            .MapCreateProduct()
+            .MapUpdateProduct();
 
         return application;
     }
@@ -23,6 +25,24 @@ public static class Endpoints
             .WithDescription(
                 "Registra un nuevo producto tras validar reglas de negocio. Retorna el ID del producto creado.")
             .Produces<int>()
+            .ProduceProblems();
+
+        return builder;
+    }
+
+    private static RouteGroupBuilder MapUpdateProduct(this RouteGroupBuilder builder)
+    {
+        builder
+            .MapPut("{id:int}",
+                (int id, UpdateProductRequest request, HttpHandler<UpdateProductRequest> handler,
+                        CancellationToken cancellationToken) =>
+                    AsDelegate.ForAsync<UpdateProductRequest>(TypedResults.NoContent)(request with { Id = id },
+                        handler,
+                        cancellationToken))
+            .WithName("UpdateProduct")
+            .WithSummary("Actualiza un producto existente")
+            .WithDescription("Actualiza un producto. Retorna 204 No Content.")
+            .Produces(StatusCodes.Status204NoContent)
             .ProduceProblems();
 
         return builder;
