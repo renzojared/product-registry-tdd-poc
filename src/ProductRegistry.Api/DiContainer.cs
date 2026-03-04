@@ -1,7 +1,33 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+
 namespace ProductRegistry.Api;
 
 public static class DiContainer
 {
+    public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
+        => services
+            .AddDotEmilu()
+            .AddEndpointsApiExplorer()
+            .AddSwaggerGen(s =>
+            {
+                s.UseAllOfToExtendReferenceSchemas();
+                s.SupportNonNullableReferenceTypes();
+            })
+            .ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            })
+            .Configure<JsonOptions>(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            })
+            .AddHttpContextAccessor()
+            .AddSerilog((sp, lc) => lc
+                .ReadFrom.Configuration(configuration)
+                .ReadFrom.Services(sp));
+
     public static IApplicationBuilder UseSerilogMiddleware(this IApplicationBuilder app)
         => app.UseSerilogRequestLogging(options =>
         {

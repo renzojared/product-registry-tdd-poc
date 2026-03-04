@@ -1,22 +1,41 @@
+using System.Globalization;
 using ProductRegistry.Api;
 using ProductRegistry.Application;
+using ProductRegistry.Infrastructure;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
+    .CreateBootstrapLogger();
 
-builder.Services
-    .AddApplication()
-    .AddEndpointsApiExplorer()
-    .AddSwaggerGen();
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services
+        .AddApplication()
+        .AddInfrastructure(builder.Configuration, Assembly.GetExecutingAssembly())
+        .AddApi(builder.Configuration);
+
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        await app.Services.ApplyMigrationsAsync();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseSerilogMiddleware();
+    app.MapEndpoints();
+
+    await app.RunAsync();
 }
-
-app.UseHttpsRedirection();
-app.UseSerilogMiddleware();
-
-await app.RunAsync();
+catch (Exception e)
+{
+    Log.Fatal(e, "Host terminated unexpectedly");
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}
