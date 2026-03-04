@@ -2,3 +2,7 @@ services:
   product-registry-db:
     ports:
       - "5433:5432"
+
+  discount-mock:
+    ports:
+      - "9090:8080"

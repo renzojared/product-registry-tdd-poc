@@ -16,6 +16,17 @@
       timeout: 5s
       retries: 5
 
+  discount-mock:
+    image: holomekc/wiremock-gui:latest
+    restart: unless-stopped
+    volumes:
+      - ./wiremock:/home/wiremock
+    networks:
+      - product-registry-network
+    command: [ "--global-response-templating", "--verbose" ]
+    # --global-response-templating  habilita Handlebars en todos los mappings
+    # --verbose  loguea cada request/response, útil en dev
+
 volumes:
   postgres_data:
 

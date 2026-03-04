@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/discount",
+    "queryParameters": {
+      "productId": {
+        "equalTo": "error"
+      }
+    }
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/problem+json"
+    },
+    "jsonBody": {
+      "type": "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+      "title": "Internal Server Error",
+      "status": 500,
+      "detail": "An unexpected error occurred while processing the discount request.",
+      "instance": "/discount"
+    }
+  }
+}

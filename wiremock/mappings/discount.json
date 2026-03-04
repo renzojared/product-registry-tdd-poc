@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/discount",
+    "queryParameters": {
+      "productId": {
+        "matches": ".+"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{ \"discountPercentage\": {{randomInt lower=0 upper=100}} }",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}
