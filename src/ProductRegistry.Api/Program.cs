@@ -1,8 +1,10 @@
 using ProductRegistry.Api;
+using ProductRegistry.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddApplication()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen();
 
