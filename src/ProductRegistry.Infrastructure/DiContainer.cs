@@ -2,9 +2,11 @@ using DotEmilu.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using ProductRegistry.Domain;
 using ProductRegistry.Infrastructure.DataAccess;
 using ProductRegistry.Infrastructure.DataAccess.Repositories;
+using ProductRegistry.Infrastructure.Services;
 
 namespace ProductRegistry.Infrastructure;
 
@@ -22,7 +24,26 @@ public static class DiContainer
                 .EnableSensitiveDataLogging()
                 .AddInterceptors(sp.GetServices<ISaveChangesInterceptor>()))
             .AddScoped<IQueries, Queries>()
-            .AddScoped<ICommands, Commands>();
+            .AddScoped<ICommands, Commands>()
+            .ConfigureDiscountClient();
+
+    private static IServiceCollection ConfigureDiscountClient(this IServiceCollection services)
+    {
+        services
+            .AddOptions<ClientDiscountOptions>()
+            .BindConfiguration(nameof(ClientDiscountOptions))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services.AddHttpClient<ProductRegistry.Application.Contracts.IDiscountService, DiscountService>((sp, options) =>
+        {
+            var service = sp.GetRequiredService<IOptionsMonitor<ClientDiscountOptions>>().CurrentValue;
+            options.BaseAddress = new Uri(service.BaseAddress);
+            options.Timeout = service.Timeout;
+        });
+
+        return services;
+    }
 
     public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider)
     {
