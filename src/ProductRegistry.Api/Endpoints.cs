@@ -1,5 +1,6 @@
 using ProductRegistry.Application.Features.CreateProduct;
 using ProductRegistry.Application.Features.UpdateProduct;
+using ProductRegistry.Application.Features.GetProductById;
 
 namespace ProductRegistry.Api;
 
@@ -10,10 +11,31 @@ public static class Endpoints
         application
             .MapGroup("api/product")
             .WithTags("Products")
+            .MapGetProductById()
             .MapCreateProduct()
             .MapUpdateProduct();
 
         return application;
+    }
+
+    private static RouteGroupBuilder MapGetProductById(this RouteGroupBuilder builder)
+    {
+        builder.MapGet("{id:int}",
+                (int id, HttpHandler<GetProductByIdRequest, GetProductByIdResponse> handler,
+                        CancellationToken cancellationToken) =>
+                    AsDelegate.ForAsync<GetProductByIdRequest, GetProductByIdResponse>(result =>
+                        result is null ? TypedResults.NotFound() : TypedResults.Ok(result))(
+                        new GetProductByIdRequest(id), handler,
+                        cancellationToken))
+            .WithName("GetProductById")
+            .WithSummary("Obtiene un producto por su Id")
+            .WithDescription(
+                "Retorna la informacion de un producto por su Id, incluyendo el nombre de su estado obtenido de cache.")
+            .Produces<GetProductByIdResponse>()
+            .Produces(StatusCodes.Status404NotFound)
+            .ProduceProblems();
+
+        return builder;
     }
 
     private static RouteGroupBuilder MapCreateProduct(this RouteGroupBuilder builder)
