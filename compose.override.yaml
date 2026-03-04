@@ -6,3 +6,12 @@ services:
   discount-mock:
     ports:
       - "9090:8080"
+
+  product-registry-api:
+    ports:
+      - "5566:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=product-registry-db;Port=5432;Database=Registry;Username=postgres;Password=postgres
+      - ClientDiscountOptions__BaseAddress=http://discount-mock:8080
+      - ClientDiscountOptions__Timeout=00:00:10

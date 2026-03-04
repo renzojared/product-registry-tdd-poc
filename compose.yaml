@@ -26,6 +26,25 @@
     command: [ "--global-response-templating", "--verbose" ]
     # --global-response-templating  habilita Handlebars en todos los mappings
     # --verbose  loguea cada request/response, útil en dev
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/__admin/mappings || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  product-registry-api:
+    image: ${DOCKER_REGISTRY-}product-registry-api
+    build:
+      context: .
+      dockerfile: src/ProductRegistry.Api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      product-registry-db:
+        condition: service_healthy
+      discount-mock:
+        condition: service_healthy
+    networks:
+      - product-registry-network
 
 volumes:
   postgres_data:
