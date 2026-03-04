@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.AspNetCore.Rewrite;
 using ProductRegistry.Api;
 using ProductRegistry.Application;
 using ProductRegistry.Infrastructure;
@@ -22,6 +23,7 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
         await app.Services.ApplyMigrationsAsync();
     }
 
