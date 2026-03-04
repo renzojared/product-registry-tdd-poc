@@ -19,6 +19,7 @@ public class CreateProductHandler(IVerifier<CreateProductRequest> verifier, ICom
         );
 
         await commands.Products.AddAsync(product, cancellationToken);
+        await commands.SaveChangesAsync(cancellationToken);
 
         return product.Id;
     }
