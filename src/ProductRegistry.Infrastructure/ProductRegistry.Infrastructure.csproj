@@ -4,4 +4,9 @@
       <ProjectReference Include="..\ProductRegistry.Application\ProductRegistry.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    </ItemGroup>
+
 </Project>
